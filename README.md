@@ -41,3 +41,5 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 First, copy the `Servlet-api.jar` for your Tomcat s lib folder to this lib folder 
 Secondly, Execute `the Script.bat` here 
 Finally, just open Tomcat server and find this project (don t forget to copy database)
+
+## I would like to thank the person who led me in this project
