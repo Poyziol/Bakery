@@ -7,29 +7,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.Connexion;
-
 public class Produit_fini {
     int idProduit;
     String nom;
-    double prixRevient;
     double prixVente;
     String description;
     Categorie categorie;
-    Recette recette;
-    
+    Parfum parfum;
+
     public Produit_fini() {
+        this.nom = " ";
+        this.description = " ";
     }
 
-    public Produit_fini(int idProduit, String nom, double prixRevient, double prixVente, String description,
-            Categorie categorie, Recette recette) {
+    public Produit_fini(int idProduit, String nom, double prixVente, String description, Categorie categorie, Parfum parfum) {
         this.idProduit = idProduit;
         this.nom = nom;
-        this.prixRevient = prixRevient;
         this.prixVente = prixVente;
         this.description = description;
         this.categorie = categorie;
-        this.recette = recette;
+        this.parfum = parfum;
     }
 
     public int getIdProduit() {
@@ -43,12 +40,6 @@ public class Produit_fini {
     }
     public void setNom(String nom) {
         this.nom = nom;
-    }
-    public double getPrixRevient() {
-        return prixRevient;
-    }
-    public void setPrixRevient(double prixRevient) {
-        this.prixRevient = prixRevient;
     }
     public double getPrixVente() {
         return prixVente;
@@ -68,27 +59,27 @@ public class Produit_fini {
     public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
     }
-    public Recette getRecette() {
-        return recette;
+    public Parfum getParfum() {
+        return parfum;
     }
-    public void setRecette(Recette recette) {
-        this.recette = recette;
+    public void setParfum(Parfum parfum) {
+        this.parfum = parfum;
     }
 
-    public static String insert(String nom, double prixRevient, double prixVente, String description, int idCategorie, int idRecette) throws Exception {
-        Connection connect = null;
+    public static String insert(String nom, double prixVente, String description, int idCategorie, int idParfum, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
-        String requete = "insert into Produit_fini (nom, prixRevient, prixVente, description, idCategorie, idRecette) values (?, ?, ?, ?, ?, ?)";
+        String requete = "insert into Produit_fini (nom, prixVente, description, idCategorie, idParfum) values (?, ?, ?, ?, ?)";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
-            prepStat.setDouble(2, prixRevient);
-            prepStat.setDouble(3, prixVente);
-            prepStat.setString(4, description);
-            prepStat.setInt(5, idCategorie);
-            prepStat.setInt(6, idRecette);
+            prepStat.setDouble(2, prixVente);
+            prepStat.setString(3, description);
+            prepStat.setInt(4, idCategorie);
+            prepStat.setInt(5, idParfum);
             int result = prepStat.executeUpdate();
             if(result > 0) {
                 message = "Insertion reussi";
@@ -104,15 +95,11 @@ public class Produit_fini {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static List<Produit_fini> getAll() throws Exception {
-        Connection connect = Connexion.connection();
+    public static List<Produit_fini> getAll(Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         List<Produit_fini> listProduit = new ArrayList<>();
@@ -120,6 +107,9 @@ public class Produit_fini {
         String requete = "select * from Produit_fini";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             result = prepStat.executeQuery();
             while(result.next()) {
@@ -127,11 +117,10 @@ public class Produit_fini {
 
                 produit.setIdProduit(result.getInt("idProduit"));
                 produit.setNom(result.getString("nom"));
-                produit.setPrixRevient(result.getDouble("prixRevient"));
                 produit.setPrixVente(result.getDouble("PrixVente"));
                 produit.setDescription(result.getString("description"));
-                produit.setCategorie(Categorie.getById(result.getInt("idCategorie")));
-                produit.setRecette(Recette.getById(result.getInt("idRecette")));
+                produit.setCategorie(Categorie.getById(result.getInt("idCategorie"), connect));
+                produit.setParfum(Parfum.getById(result.getInt("idParfum"), connect));
 
                 listProduit.add(produit);
             }
@@ -146,33 +135,31 @@ public class Produit_fini {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return listProduit;
     }
 
-    public static Produit_fini getById(int idProduit) throws Exception {
-        Connection connect = Connexion.connection();
+    public static Produit_fini getById(int idProduit, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         Produit_fini produit = new Produit_fini();
-        String requete = "select * from Produit_fini where idEmploye = ?";
+        String requete = "select * from Produit_fini where idProduit = ?";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idProduit);
             result = prepStat.executeQuery();
             if(result.next()) {     
                 produit.setIdProduit(result.getInt("idProduit"));
                 produit.setNom(result.getString("nom"));
-                produit.setPrixRevient(result.getDouble("prixRevient"));
                 produit.setPrixVente(result.getDouble("PrixVente"));
                 produit.setDescription(result.getString("description"));
-                produit.setCategorie(Categorie.getById(result.getInt("idCategorie")));
-                produit.setRecette(Recette.getById(result.getInt("idRecette")));
+                produit.setCategorie(Categorie.getById(result.getInt("idCategorie"), connect));
+                produit.setParfum(Parfum.getById(result.getInt("idParfum"), connect));
             }
         }
         catch (SQLException e) {
@@ -185,29 +172,26 @@ public class Produit_fini {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return produit;
     }
 
-    public static String update(int idProduit, String nom, double prixRevient, double prixVente, String description, int idCategorie, int idRecette) throws Exception {
-        Connection connect = null;
+    public static String update(int idProduit, String nom, double prixVente, String description, int idCategorie, int idParfum, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
-        String requete = "update Produit_fini set nom = ?, prixRevient = ?, prixVente = ?, description = ?, idCategorie = ?, idRecette = ? where idProduit = ?";
+        String requete = "update Produit_fini set nom = ?, prixVente = ?, description = ?, idCategorie = ?, idParfum = ? where idProduit = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
-            prepStat.setDouble(2, prixRevient);
-            prepStat.setDouble(3, prixRevient);
-            prepStat.setString(4, description);
-            prepStat.setInt(5, idCategorie);
-            prepStat.setInt(6, idRecette);
-            prepStat.setInt(7, idProduit);
+            prepStat.setDouble(2, prixVente);
+            prepStat.setString(3, description);
+            prepStat.setInt(4, idCategorie);
+            prepStat.setInt(5, idParfum);
+            prepStat.setInt(6, idProduit);
             int result = prepStat.executeUpdate();
             if(result > 0) {
                 message = "Modification reussi";
@@ -223,20 +207,18 @@ public class Produit_fini {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static String delete(int idProduit) throws Exception {
-        Connection connect = null;
+    public static String delete(int idProduit, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "delete from Produit_fini where idProduit = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idProduit);
             int result = prepStat.executeUpdate();
@@ -253,9 +235,6 @@ public class Produit_fini {
         finally {
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;

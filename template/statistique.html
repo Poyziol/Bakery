@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/stat.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Boulangerie Artisanale</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Produits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Recettes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Employés</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Stocks</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Fournisseurs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="statistique.html">Statistiques</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+        <h1 class="text-center mb-4">Statistiques de la Boulangerie</h1>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total des Ventes</h5>
+                        <p class="stat-value">123,456 €</p>
+                        <p class="text-muted">Mois en cours</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Produits Vendus</h5>
+                        <p class="stat-value">3,456</p>
+                        <p class="text-muted">Mois en cours</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Stocks Restants</h5>
+                        <p class="stat-value">1,234 unités</p>
+                        <p class="text-muted">Au 03 Janvier 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Graphique des Ventes</h5>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Produits les Plus Vendus</h5>
+                        <canvas id="topProductsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center text-white py-3 bg-dark">
+        <p>&copy; 2025 Boulangerie Artisanale. Tous droits réservés.</p>
+    </footer>
+
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/stat.js"></script>
+</body>
+</html>

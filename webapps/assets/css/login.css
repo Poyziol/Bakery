@@ -1,0 +1,88 @@
+/* Couleurs personnalisées */
+:root {
+    --primary-color: #d35400; /* Orange chaud */
+    --secondary-color: #6e2c00; /* Brun foncé */
+    --background-color: #fdf5e6; /* Beige clair */
+    --text-color: #6c757d; /* Gris doux */
+    --link-color: #d35400; /* Changer la couleur du lien en orange */
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('bakery-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    padding: 0;
+}
+
+/* Login Card */
+.login-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Titre de la page */
+h3 {
+    color: var(--secondary-color); /* Utiliser le brun foncé comme couleur */
+    font-weight: bold;
+}
+
+p {
+    color: var(--text-color);
+}
+
+/* Form Controls */
+.form-control {
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    height: 45px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(211, 84, 0, 0.25);
+}
+
+/* Button */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+    font-weight: bold;
+    padding: 12px;
+    font-size: 1.1rem;
+    border-radius: 25px;
+}
+
+.btn-primary:hover {
+    background-color: #e67e22;
+    border-color: #e67e22;
+}
+
+/* Footer link */
+a {
+    color: var(--link-color); /* Modifier la couleur du lien ici */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #e67e22; /* Changer en couleur d'orange plus foncée au hover */
+    text-decoration: underline;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .login-card {
+        padding: 2rem;
+    }
+}

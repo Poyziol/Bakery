@@ -9,18 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dao.Connexion;
-
 public class Recette {
     int idRecette;
+    Produit_fini produit;
     double qteEstimee;
     Map<Ingredient, Double> ingredients;
 
     public Recette() {
     }
 
-    public Recette(int idRecette, double qteEstimee, Map<Ingredient, Double> ingredients) {
+    public Recette(int idRecette, Produit_fini produit, double qteEstimee, Map<Ingredient, Double> ingredients) {
         this.idRecette = idRecette;
+        this.produit = produit;
         this.qteEstimee = qteEstimee;
         this.ingredients = ingredients;
     }
@@ -31,6 +31,14 @@ public class Recette {
 
     public void setIdRecette(int idRecette) {
         this.idRecette = idRecette;
+    }
+
+    public Produit_fini getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit_fini produit) {
+        this.produit = produit;
     }
 
     public double getQteEstimee() {
@@ -49,13 +57,14 @@ public class Recette {
         this.ingredients = ingredients;
     }
 
-    public static String insertDetail_Recette(int idRecette, Map<Integer, Double> ingredients) throws Exception {
-        Connection connect = null;
+    public static String insertDetail_Recette(int idRecette, Map<Integer, Double> ingredients, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "insert into Recette_Detail(idRecette, idIngredient, quantite) values (?, ?, ?)";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             for(Map.Entry<Integer, Double> ingredient : ingredients.entrySet()) {
                 prepStat.setInt(1, idRecette);
@@ -77,25 +86,32 @@ public class Recette {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static String insert(double qteEstimee) throws Exception {
-        Connection connect = null;
+    public static String insert(int idProduit, double qteEstimee, Map<Integer, Double> ingredients, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
-        String requete = "insert into Recette(qteEstimee) values (?)";
+        ResultSet generatedKeys = null;
+        String requete = "insert into Recette(idProduit, qteEstimee) values (?, ?)";
         String message = "";
         try {
-            connect = Connexion.connection();
-            prepStat = connect.prepareStatement(requete);
-            prepStat.setDouble(1, qteEstimee);
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
+            prepStat = connect.prepareStatement(requete, PreparedStatement.RETURN_GENERATED_KEYS);
+            prepStat.setInt(1, idProduit);
+            prepStat.setDouble(2, qteEstimee);
             int result = prepStat.executeUpdate();
             if(result > 0) {
-                message = "Insertion reussi";
+                generatedKeys = prepStat.getGeneratedKeys();
+
+                if (generatedKeys.next()) {
+                    int idRecette = generatedKeys.getInt(1); // 1 correspond à la première colonne du ResultSet
+                    message = insertDetail_Recette(idRecette, ingredients, connect);
+                } else {
+                    message = "Clé générée non disponible.";
+                }
             }
             else {
                 message = "Insertion echoue";
@@ -105,18 +121,17 @@ public class Recette {
             throw e;
         }
         finally {
+            if(generatedKeys  != null) {
+                generatedKeys .close();
+            }
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;
     }
 
-    public static Map<Ingredient, Double> getAllIngIngredients_Recette(int idRecette) throws Exception {
-        Connection connect = Connexion.connection();
+    public static Map<Ingredient, Double> getAllIngredients_Recette(int idRecette, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         Map<Ingredient, Double> listIngredients = new HashMap<>();
@@ -125,11 +140,14 @@ public class Recette {
         String requete = "select * from Recette_Detail where idRecette = ?";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idRecette);
             result = prepStat.executeQuery();
             while(result.next()) {
-                ingredient = Ingredient.getById(result.getInt("idRecette"));
+                ingredient = Ingredient.getById(result.getInt("idIngredient"), connect);
                 qte = result.getDouble("quantite");
                 
                 listIngredients.put(ingredient, qte);
@@ -145,16 +163,12 @@ public class Recette {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return listIngredients;
     }
 
-    public static List<Recette> getAll() throws Exception {
-        Connection connect = Connexion.connection();
+    public static List<Recette> getAll(Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         List<Recette> listRecette = new ArrayList<>();
@@ -162,14 +176,18 @@ public class Recette {
         String requete = "select * from Recette";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             result = prepStat.executeQuery();
             while(result.next()) {
                 recette = new Recette();
 
                 recette.setIdRecette(result.getInt("idRecette"));
+                recette.setProduit(Produit_fini.getById(result.getInt("idProduit"), connect));
                 recette.setQteEstimee(result.getDouble("qteEstimee"));
-                recette.setIngredients(getAllIngIngredients_Recette(recette.getIdRecette()));
+                recette.setIngredients(getAllIngredients_Recette(recette.getIdRecette(), connect));
 
                 listRecette.add(recette);
             }
@@ -184,29 +202,29 @@ public class Recette {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return listRecette;
     }
 
-    public static Recette getById(int idRecette) throws Exception {
-        Connection connect = Connexion.connection();
+    public static Recette getById(int idRecette, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         Recette recette = new Recette();
         String requete = "select * from Recette where idRecette = ?";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idRecette);
             result = prepStat.executeQuery();
             if(result.next()) {
                 recette.setIdRecette(result.getInt("idRecette"));
+                recette.setProduit(Produit_fini.getById(result.getInt("idProduit"), connect));
                 recette.setQteEstimee(result.getDouble("qteEstimee"));
-                recette.setIngredients(getAllIngIngredients_Recette(idRecette));
+                recette.setIngredients(getAllIngredients_Recette(idRecette, connect));
             }
         }
         catch (SQLException e) {
@@ -219,23 +237,22 @@ public class Recette {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return recette;
     }
 
-    public static String update(int idRecette, double qteEstimee) throws Exception {
-        Connection connect = null;
+    public static String update(int idRecette, int idProduit, double qteEstimee, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
-        String requete = "update Recette set qteEstimee = ? where idRecette = ?";
+        String requete = "update Recette set idProduit = ?, qteEstimee = ? where idRecette = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
-            prepStat.setDouble(1, qteEstimee);
+            prepStat.setInt(1, idProduit);
+            prepStat.setDouble(2, qteEstimee);
             prepStat.setInt(3, idRecette);
             int result = prepStat.executeUpdate();
             if(result > 0) {
@@ -252,20 +269,18 @@ public class Recette {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static String deleteIngredients_Recette(int idRecette) throws Exception {
-        Connection connect = null;
+    public static String deleteIngredients_Recette(int idRecette, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "delete from Recette_Detail where idRecette = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idRecette);
             int result = prepStat.executeUpdate();
@@ -282,26 +297,30 @@ public class Recette {
         finally {
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;
     }
 
-    public static String delete(int idRecette) throws Exception {
-        Connection connect = null;
+    public static String delete(int idRecette, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "delete from Recette where idRecette = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
-            prepStat = connect.prepareStatement(requete);
-            prepStat.setInt(1, idRecette);
-            int result = prepStat.executeUpdate();
-            if(result > 0) {
-                message = "Suppression reussi";
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
+            message = deleteIngredients_Recette(idRecette, connect);
+            if (message.equals("Suppression reussi")) {
+                prepStat = connect.prepareStatement(requete);
+                prepStat.setInt(1, idRecette);
+                int result = prepStat.executeUpdate();
+                if(result > 0) {
+                    message = "Suppression reussi";
+                }
+                else {
+                    message = "Suppression echoue";
+                }
             }
             else {
                 message = "Suppression echoue";
@@ -313,9 +332,6 @@ public class Recette {
         finally {
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;

@@ -1,78 +1,111 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boulangerie - Accueil</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Accueil Boulangerie</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/index.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">Boulangerie <strong>Douceur</strong></div>
-        <nav class="nav">
-            <ul>
-                <li><a href="#accueil">Accueil</a></li>
-                <li><a href="#produits">Nos Produits</a></li>
-                <li><a href="#about">À propos</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Boulangerie Artisanale</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Produits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Recettes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Employés</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Stocks</a></li>
+                    <li class="nav-item"><a class="nav-link" href="crud.html">Fournisseurs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="statistique.html">Statistiques</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center text-white">
+        <div class="container">
+            <h1 class="display-4">Bienvenue à la Boulangerie Artisanale</h1>
+            <p class="lead">Explorez vos produits, gérez vos stocks et vos employés en toute simplicité.</p>
+        </div>
     </header>
 
-    <!-- Slider -->
-    <section class="slider">
-        <div class="slider-content">
-            <h1>Des pains frais chaque jour</h1>
-            <p>Découvrez nos délicieuses créations artisanales.</p>
-            <a href="#produits" class="btn">Voir nos produits</a>
+    <main class="container my-5">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card menu-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-basket3-fill icon"></i>
+                        <h5 class="card-title">Gestion des Produits</h5>
+                        <p class="card-text">Ajoutez, modifiez et consultez les produits disponibles.</p>
+                        <a href="crud.html" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card menu-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people-fill icon"></i>
+                        <h5 class="card-title">Gestion des Employés</h5>
+                        <p class="card-text">Supervisez les employés et leurs fonctions.</p>
+                        <a href="crud.html" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card menu-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-boxes icon"></i>
+                        <h5 class="card-title">Gestion des Stocks</h5>
+                        <p class="card-text">Suivez les stocks d'ingrédients et de produits finis.</p>
+                        <a href="crud.html" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
-
-    <!-- Nos Produits -->
-    <section id="produits" class="produits">
-        <h2>Nos Produits</h2>
-        <div class="grid">
-            <div class="produit">
-                <img src="baguette.jpg" alt="Baguette">
-                <h3>Baguette classique</h3>
-                <p>Pain traditionnel français.</p>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card menu-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-clipboard-data icon"></i>
+                        <h5 class="card-title">Recettes</h5>
+                        <p class="card-text">Créez et visualisez les recettes de vos produits.</p>
+                        <a href="crud.html" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
             </div>
-            <div class="produit">
-                <img src="croissant.jpg" alt="Croissant">
-                <h3>Croissant</h3>
-                <p>Viennoiserie au beurre feuilletée.</p>
+            <div class="col-md-4 mb-3">
+                <div class="card menu-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-truck icon"></i>
+                        <h5 class="card-title">Fournisseurs</h5>
+                        <p class="card-text">Gérez vos relations avec les fournisseurs.</p>
+                        <a href="crud.html" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
             </div>
-            <div class="produit">
-                <img src="gateau.jpg" alt="Gâteau">
-                <h3>Gâteau personnalisé</h3>
-                <p>Pour toutes vos occasions spéciales.</p>
+            <div class="col-md-4 mb-3">
+                <div class="card menu-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-gear-fill icon"></i>
+                        <h5 class="card-title">Statistiques</h5>
+                        <p class="card-text">Configurez les options du système.</p>
+                        <a href="statistique.html" class="btn btn-primary">Accéder</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- À propos -->
-    <section id="about" class="about">
-        <h2>À propos de nous</h2>
-        <p>La Boulangerie Douceur est spécialisée dans les produits frais et artisanaux depuis 10 ans. Notre équipe s’engage à vous offrir des pains, viennoiseries, et pâtisseries de qualité.</p>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="contact">
-        <h2>Contactez-nous</h2>
-        <p>Lot II D 23, Ambanidia, Antananarivo</p>
-        <p>Téléphone : 032 123 4567</p>
-        <form>
-            <input type="text" placeholder="Nom" required>
-            <input type="email" placeholder="Email" required>
-            <textarea placeholder="Message"></textarea>
-            <button type="submit">Envoyer</button>
-        </form>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 Boulangerie Douceur - Tous droits réservés.</p>
+    <footer class="text-center text-white py-3 bg-dark">
+        <p>&copy; 2025 Boulangerie Artisanale. Tous droits réservés.</p>
     </footer>
+
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

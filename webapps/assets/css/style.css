@@ -1,0 +1,73 @@
+/* crud.css */
+
+/* Couleurs personnalisées */
+:root {
+    --primary-color: #d35400; /* Orange chaud */
+    --secondary-color: #6e2c00; /* Brun foncé */
+    --background-color: #fdf5e6; /* Beige clair */
+    --text-color: #6c757d; /* Gris doux */
+}
+
+body {
+    background-color: var(--background-color);
+}
+
+h1, h2 {
+    color: var(--secondary-color);
+}
+
+/* Table */
+.table thead {
+    background-color: var(--primary-color);
+    color: #fff;
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(211, 84, 0, 0.1);
+}
+
+/* Boutons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #e67e22;
+}
+
+.btn-secondary {
+    background-color: var(--text-color);
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-warning {
+    background-color: #f39c12;
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background-color: #e67e22;
+}
+
+.btn-danger {
+    background-color: #c0392b;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #e74c3c;
+}
+
+/* Carte */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}

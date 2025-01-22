@@ -1,100 +1,88 @@
-/* Général */
+/* Couleurs personnalisées */
+:root {
+    --primary-color: #d35400; /* Orange chaud */
+    --secondary-color: #6e2c00; /* Brun foncé */
+    --background-color: #fdf5e6; /* Beige clair */
+    --text-color: #6c757d; /* Gris doux */
+    --link-color: #d35400; /* Changer la couleur du lien en orange */
+}
+
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #fbe7d6, #f6d2b7);
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: var(--background-color);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('bakery-bg.jpg');
+    background-size: cover;
+    background-position: center;
     height: 100vh;
+    padding: 0;
 }
 
-/* Container principal */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-/* Carte de connexion */
+/* Login Card */
 .login-card {
-    background: #fff;
-    padding: 30px 20px;
+    background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    width: 350px;
-    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
 }
 
-.login-card h2 {
-    margin-bottom: 10px;
-    color: #c49a6c;
+/* Titre de la page */
+h3 {
+    color: var(--secondary-color); /* Utiliser le brun foncé comme couleur */
     font-weight: bold;
 }
 
-.login-card p {
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #777;
+p {
+    color: var(--text-color);
 }
 
-/* Champs d'entrée */
-.input-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.input-group label {
-    font-size: 14px;
-    margin-bottom: 5px;
-    display: block;
-    color: #555;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
+/* Form Controls */
+.form-control {
+    border: 1px solid var(--secondary-color);
     border-radius: 5px;
-    font-size: 14px;
-    box-sizing: border-box;
+    height: 45px;
 }
 
-/* Bouton */
-.btn {
-    width: 100%;
-    padding: 10px;
-    background: #c49a6c;
-    border: none;
-    border-radius: 5px;
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(211, 84, 0, 0.25);
+}
+
+/* Button */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
     color: #fff;
-    font-size: 16px;
     font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
+    padding: 12px;
+    font-size: 1.1rem;
+    border-radius: 25px;
 }
 
-.btn:hover {
-    background: #a97f5c;
+.btn-primary:hover {
+    background-color: #e67e22;
+    border-color: #e67e22;
 }
 
-/* Liens supplémentaires */
-.extra-links {
-    margin-top: 15px;
-    font-size: 13px;
-}
-
-.extra-links a {
-    color: #c49a6c;
+/* Footer link */
+a {
+    color: var(--link-color); /* Modifier la couleur du lien ici */
     text-decoration: none;
-    margin: 0 5px;
+    font-weight: 500;
 }
 
-.extra-links a:hover {
+a:hover {
+    color: #e67e22; /* Changer en couleur d'orange plus foncée au hover */
     text-decoration: underline;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .login-card {
+        padding: 2rem;
+    }
 }

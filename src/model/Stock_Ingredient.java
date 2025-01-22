@@ -8,12 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.Connexion;
-
 public class Stock_Ingredient {
     int idStock;
     Date dateMouvement;
-    boolean isEntree;
+    String mouvement;
     double prixUnitaire;
     double quantite;
     Ingredient ingredient;
@@ -21,11 +19,11 @@ public class Stock_Ingredient {
     public Stock_Ingredient() {
     }
 
-    public Stock_Ingredient(int idStock, Date dateMouvement, boolean isEntree, double prixUnitaire, double quantite,
+    public Stock_Ingredient(int idStock, Date dateMouvement, String mouvement, double prixUnitaire, double quantite,
             Ingredient ingredient) {
         this.idStock = idStock;
         this.dateMouvement = dateMouvement;
-        this.isEntree = isEntree;
+        this.mouvement = mouvement;
         this.prixUnitaire = prixUnitaire;
         this.quantite = quantite;
         this.ingredient = ingredient;
@@ -47,12 +45,12 @@ public class Stock_Ingredient {
         this.dateMouvement = dateMouvement;
     }
 
-    public boolean getIsEntree() {
-        return isEntree;
+    public String getMouvement() {
+        return mouvement;
     }
 
-    public void setIsEntree(boolean isEntree) {
-        this.isEntree = isEntree;
+    public void setMouvement(String mouvement) {
+        this.mouvement = mouvement;
     }
 
     public double getPrixUnitaire() {
@@ -79,13 +77,14 @@ public class Stock_Ingredient {
         this.ingredient = ingredient;
     }
 
-    public static String insert(Date dateMouvement, boolean isEntree, double prixUnitaire, double quantite, int idIngredient) throws Exception {
-        Connection connect = null;
+    public static String insert(Date dateMouvement, boolean isEntree, double prixUnitaire, double quantite, int idIngredient, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "insert into Stock_Ingredient(dateMouvement, isEntree, prixUnitaire, quantite, idIngredient) values (?, ?, ?, ?, ?)";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setDate(1, dateMouvement);
             prepStat.setBoolean(2, isEntree);
@@ -107,15 +106,11 @@ public class Stock_Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static List<Stock_Ingredient> getAll() throws Exception {
-        Connection connect = Connexion.connection();
+    public static List<Stock_Ingredient> getAll(Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         List<Stock_Ingredient> listStock = new ArrayList<>();
@@ -123,6 +118,9 @@ public class Stock_Ingredient {
         String requete = "select * from Stock_Ingredient";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             result = prepStat.executeQuery();
             while(result.next()) {
@@ -130,10 +128,16 @@ public class Stock_Ingredient {
 
                 stockIngredient.setIdStock(result.getInt("idStock"));
                 stockIngredient.setDateMouvement(result.getDate("dateMouvement"));
-                stockIngredient.setIsEntree(result.getBoolean("isEntree"));
+                boolean isEntree = result.getBoolean("isEntree");
+                if (isEntree) {
+                    stockIngredient.setMouvement("Achat");
+                }
+                else {
+                    stockIngredient.setMouvement("Fabrication");
+                }
                 stockIngredient.setPrixUnitaire(result.getDouble("prixUnitaire"));
                 stockIngredient.setQuantite(result.getDouble("quantite"));
-                stockIngredient.setIngredient(Ingredient.getById(result.getInt("idIngredient")));
+                stockIngredient.setIngredient(Ingredient.getById(result.getInt("idIngredient"), connect));
 
                 listStock.add(stockIngredient);
             }
@@ -148,32 +152,43 @@ public class Stock_Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return listStock;
     }
 
-    public static Stock_Ingredient getById(int idStock) throws Exception {
-        Connection connect = Connexion.connection();
+    public static List<Stock_Ingredient> getAllByCriteria(Date dateMouvement, Boolean mouvement, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
-        Stock_Ingredient stockIngredient = new Stock_Ingredient();
-        String requete = "select * from Stock_Ingredient where idStock = ?";
+        List<Stock_Ingredient> listStock = new ArrayList<>();
+        Stock_Ingredient stockIngredient = null;
+        String requete = "select * from getIngredientsBy_Criteria(?, ?)";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
-            prepStat.setInt(1, idStock);
+            prepStat.setDate(1, dateMouvement);
+            prepStat.setObject(2, mouvement);
             result = prepStat.executeQuery();
-            if(result.next()) {         
+            while(result.next()) {
+                stockIngredient = new Stock_Ingredient();
+
                 stockIngredient.setIdStock(result.getInt("idStock"));
                 stockIngredient.setDateMouvement(result.getDate("dateMouvement"));
-                stockIngredient.setIsEntree(result.getBoolean("isEntree"));
+                boolean isEntree = result.getBoolean("isEntree");
+                if (isEntree) {
+                    stockIngredient.setMouvement("Achat");
+                }
+                else {
+                    stockIngredient.setMouvement("Fabrication");
+                }
                 stockIngredient.setPrixUnitaire(result.getDouble("prixUnitaire"));
                 stockIngredient.setQuantite(result.getDouble("quantite"));
-                stockIngredient.setIngredient(Ingredient.getById(result.getInt("idIngredient")));
+                stockIngredient.setIngredient(Ingredient.getById(result.getInt("idIngredient"), connect));
+
+                listStock.add(stockIngredient);
             }
         }
         catch (SQLException e) {
@@ -186,21 +201,61 @@ public class Stock_Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
+        }
+
+        return listStock;
+    }
+
+    public static Stock_Ingredient getById(int idStock, Connection connect) throws Exception {
+        PreparedStatement prepStat = null;
+        ResultSet result = null;
+        Stock_Ingredient stockIngredient = new Stock_Ingredient();
+        String requete = "select * from Stock_Ingredient where idStock = ?";
+        
+        try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
+            prepStat = connect.prepareStatement(requete);
+            prepStat.setInt(1, idStock);
+            result = prepStat.executeQuery();
+            if(result.next()) {         
+                stockIngredient.setIdStock(result.getInt("idStock"));
+                stockIngredient.setDateMouvement(result.getDate("dateMouvement"));
+                boolean isEntree = result.getBoolean("isEntree");
+                if (isEntree) {
+                    stockIngredient.setMouvement("Vente");
+                }
+                else {
+                    stockIngredient.setMouvement("Achat");
+                }                stockIngredient.setPrixUnitaire(result.getDouble("prixUnitaire"));
+                stockIngredient.setQuantite(result.getDouble("quantite"));
+                stockIngredient.setIngredient(Ingredient.getById(result.getInt("idIngredient"), connect));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(result != null) {
+                result.close();
+            }
+            if(prepStat != null) {
+                prepStat.close();
             }
         }
 
         return stockIngredient;
     }
 
-    public static String update(int idStock, Date dateMouvement, boolean isEntree, double prixUnitaire, double quantite, int idIngredient) throws Exception {
-        Connection connect = null;
+    public static String update(int idStock, Date dateMouvement, boolean isEntree, double prixUnitaire, double quantite, int idIngredient, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "update Stock_Ingredient set dateMouvement = ?, isEntree = ?, prixUnitaire = ?, quantite = ?, idIngredient = ? where idStock = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setDate(1, dateMouvement);
             prepStat.setBoolean(2, isEntree);
@@ -223,20 +278,18 @@ public class Stock_Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static String delete(int idStock) throws Exception {
-        Connection connect = null;
+    public static String delete(int idStock, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "delete from Stock_Ingredient where idStock = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idStock);
             int result = prepStat.executeUpdate();
@@ -253,9 +306,6 @@ public class Stock_Ingredient {
         finally {
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;

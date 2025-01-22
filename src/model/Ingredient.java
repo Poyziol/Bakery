@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import dao.Connexion;
+import java.util.Map;
 
 public class Ingredient {
     int idIngredient;
@@ -15,6 +15,7 @@ public class Ingredient {
     Unite unite;
 
     public Ingredient() {
+        this.nom = " ";
     }
 
     public Ingredient(int idIngredient, String nom, Unite unite) {
@@ -47,13 +48,14 @@ public class Ingredient {
         this.unite = unite;
     }
 
-    public static String insert(String nom, int idUnite) throws Exception {
-        Connection connect = null;
+    public static String insert(String nom, int idUnite, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "insert into Ingredient(nom, idUnite) values (?, ?)";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
             prepStat.setInt(2, idUnite);
@@ -72,15 +74,45 @@ public class Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static List<Ingredient> getAll() throws Exception {
-        Connection connect = Connexion.connection();
+    public static Map<Ingredient, Double> getAllIngredient_Stock(Connection connect) throws Exception {
+        PreparedStatement prepStat = null;
+        ResultSet result = null;
+        Map<Ingredient, Double> listIngredient = new HashMap<>();
+        String requete = "select * from getStock_Ingredients()";
+        
+        try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
+            prepStat = connect.prepareStatement(requete);
+            result = prepStat.executeQuery();
+            while(result.next()) {
+                Ingredient ingredient = Ingredient.getById(result.getInt("idIngredient"), connect);
+                double stock = result.getDouble("stock");
+                
+                listIngredient.put(ingredient, stock);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(result != null) {
+                result.close();
+            }
+            if(prepStat != null) {
+                prepStat.close();
+            }
+        }
+
+        return listIngredient;
+    }
+
+    public static List<Ingredient> getAll(Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         List<Ingredient> listIngredient = new ArrayList<>();
@@ -88,6 +120,9 @@ public class Ingredient {
         String requete = "select * from Ingredient";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             result = prepStat.executeQuery();
             while(result.next()) {
@@ -95,7 +130,7 @@ public class Ingredient {
 
                 ingredient.setIdIngredient(result.getInt("idIngredient"));
                 ingredient.setNom(result.getString("nom"));
-                ingredient.setUnite(Unite.getById(result.getInt("idUnite")));
+                ingredient.setUnite(Unite.getById(result.getInt("idUnite"), connect));
 
                 listIngredient.add(ingredient);
             }
@@ -110,29 +145,28 @@ public class Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return listIngredient;
     }
 
-    public static Ingredient getById(int idIngredient) throws Exception {
-        Connection connect = Connexion.connection();
+    public static Ingredient getById(int idIngredient, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         Ingredient ingredient = new Ingredient();
         String requete = "select * from Ingredient where idIngredient = ?";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idIngredient);
             result = prepStat.executeQuery();
             if(result.next()) {
                 ingredient.setIdIngredient(result.getInt("idIngredient"));
                 ingredient.setNom(result.getString("nom"));
-                ingredient.setUnite(Unite.getById(result.getInt("idUnite")));
+                ingredient.setUnite(Unite.getById(result.getInt("idUnite"), connect));
             }
         }
         catch (SQLException e) {
@@ -145,21 +179,19 @@ public class Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return ingredient;
     }
 
-    public static String update(int idIngredient, String nom, int idUnite) throws Exception {
-        Connection connect = null;
+    public static String update(int idIngredient, String nom, int idUnite, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "update Ingredient set nom = ?, idUnite = ? where idIngredient = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
             prepStat.setInt(2, idUnite);
@@ -179,20 +211,18 @@ public class Ingredient {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static String delete(int idIngredient) throws Exception {
-        Connection connect = null;
+    public static String delete(int idIngredient, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "delete from Ingredient where idIngredient = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idIngredient);
             int result = prepStat.executeUpdate();
@@ -209,9 +239,6 @@ public class Ingredient {
         finally {
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;

@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.Connexion;
-
 public class Unite {
     int idUnite;
     String nom;
@@ -47,13 +45,14 @@ public class Unite {
         this.description = description;
     }
 
-    public static String insert(String nom, String description) throws Exception {
-        Connection connect = null;
+    public static String insert(String nom, String description, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "insert into Unite(nom, description) values (?, ?)";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
             prepStat.setString(2, description);
@@ -72,15 +71,11 @@ public class Unite {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static List<Unite> getAll() throws Exception {
-        Connection connect = Connexion.connection();
+    public static List<Unite> getAll(Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         List<Unite> listUnite = new ArrayList<>();
@@ -88,6 +83,9 @@ public class Unite {
         String requete = "select * from Unite";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             result = prepStat.executeQuery();
             while(result.next()) {
@@ -110,22 +108,21 @@ public class Unite {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return listUnite;
     }
 
-    public static Unite getById(int idUnite) throws Exception {
-        Connection connect = Connexion.connection();
+    public static Unite getById(int idUnite, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         Unite unite = new Unite();
         String requete = "select * from Unite where idUnite = ?";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idUnite);
             result = prepStat.executeQuery();
@@ -145,21 +142,19 @@ public class Unite {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return unite;
     }
 
-    public static String update(int idUnite, String nom, String description) throws Exception {
-        Connection connect = null;
+    public static String update(int idUnite, String nom, String description, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "update Unite set nom = ?, description = ? where idUnite = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
             prepStat.setString(2, description);
@@ -179,20 +174,18 @@ public class Unite {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static String delete(int idUnite) throws Exception {
-        Connection connect = null;
+    public static String delete(int idUnite, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "delete from Unite where idUnite = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idUnite);
             int result = prepStat.executeUpdate();
@@ -209,9 +202,6 @@ public class Unite {
         finally {
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;

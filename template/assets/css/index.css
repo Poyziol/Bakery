@@ -1,0 +1,89 @@
+/* Couleurs personnalisées */
+:root {
+    --primary-color: #d35400; /* Orange chaud */
+    --secondary-color: #6e2c00; /* Brun foncé */
+    --background-color: #fdf5e6; /* Beige clair */
+    --text-color: #6c757d; /* Gris doux */
+}
+
+body {
+    background-color: var(--background-color);
+}
+
+.navbar {
+    background-color: var(--secondary-color);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #fff !important;
+}
+
+.nav-link {
+    color: var(--text-color) !important;
+}
+
+/* Liens dans la navbar */
+.navbar .nav-link {
+    color: var(--primary-color); /* Orange par défaut */
+    font-weight: 600; /* Légèrement plus gras pour un meilleur contraste */
+    text-transform: capitalize; /* Garde un style professionnel */
+    letter-spacing: 0.3px;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent; /* Ligne invisible par défaut */
+}
+
+.navbar .nav-link:hover {
+    color: #fff; /* Devient blanc au survol */
+    border-bottom: 2px solid var(--primary-color); /* Ligne orange apparente */
+}
+
+.navbar .nav-link.active {
+    color: #fff; /* Couleur blanche pour le lien actif */
+    border-bottom: 2px solid var(--primary-color); /* Ligne orange fixe pour le lien actif */
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('bakery-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 0;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+}
+
+.menu-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.menu-card .icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.card-title {
+    color: var(--secondary-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #e67e22;
+}
+
+footer {
+    background-color: var(--secondary-color);
+    color: #fff;
+}

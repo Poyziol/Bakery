@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.Connexion;
-
 public class Categorie {
     int idCategorie;
     String nom;
@@ -47,13 +45,16 @@ public class Categorie {
         this.description = description;
     }
 
-    public static String insert(String nom, String description) throws Exception {
-        Connection connect = null;
+    public static String insert(String nom, String description, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "insert into Categorie(nom, description) values (?, ?)";
         String message = "";
+        
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
+            
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
             prepStat.setString(2, description);
@@ -72,15 +73,11 @@ public class Categorie {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static List<Categorie> getAll() throws Exception {
-        Connection connect = Connexion.connection();
+    public static List<Categorie> getAll(Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         List<Categorie> listCategorie = new ArrayList<>();
@@ -88,6 +85,9 @@ public class Categorie {
         String requete = "select * from Categorie";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             result = prepStat.executeQuery();
             while(result.next()) {
@@ -110,22 +110,21 @@ public class Categorie {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return listCategorie;
     }
 
-    public static Categorie getById(int idCategorie) throws Exception {
-        Connection connect = Connexion.connection();
+    public static Categorie getById(int idCategorie, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         ResultSet result = null;
         Categorie categorie = new Categorie();
         String requete = "select * from Categorie where idCategorie = ?";
         
         try {
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idCategorie);
             result = prepStat.executeQuery();
@@ -145,21 +144,19 @@ public class Categorie {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
 
         return categorie;
     }
 
-    public static String update(int idCategorie, String nom, String description) throws Exception {
-        Connection connect = null;
+    public static String update(int idCategorie, String nom, String description, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "update Categorie set nom = ?, description = ? where idCategorie = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setString(1, nom);
             prepStat.setString(2, description);
@@ -179,20 +176,18 @@ public class Categorie {
             if(prepStat != null) {
                 prepStat.close();
             }
-            if(connect != null) {
-                connect.close();
-            }
         }
         return message;
     }
 
-    public static String delete(int idCategorie) throws Exception {
-        Connection connect = null;
+    public static String delete(int idCategorie, Connection connect) throws Exception {
         PreparedStatement prepStat = null;
         String requete = "delete from Categorie where idCategorie = ?";
         String message = "";
         try {
-            connect = Connexion.connection();
+            if (connect == null) {
+                connect = Connexion.connection();
+            }
             prepStat = connect.prepareStatement(requete);
             prepStat.setInt(1, idCategorie);
             int result = prepStat.executeUpdate();
@@ -209,9 +204,6 @@ public class Categorie {
         finally {
             if(prepStat != null) {
                 prepStat.close();
-            }
-            if(connect != null) {
-                connect.close();
             }
         }
         return message;

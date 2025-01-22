@@ -2,16 +2,16 @@
 setlocal
 
 @REM Définir les dossiers des .classes et les librairies
-set "bin=D:\Documents\S5\Mme Baovola\Projet S5-S3\bin"
-set "lib=D:\Documents\S5\Mme Baovola\Projet S5-S3\lib"
+set "bin=D:\Documents\S5\Mme Baovola\Projet S5-S3\Gestion_Boulangerie\bin"
+set "lib=D:\Documents\S5\Mme Baovola\Projet S5-S3\Gestion_Boulangerie\lib"
 
 @REM Définir leur destinataire
-set "bin-dir=D:\Documents\S5\Mme Baovola\Projet S5-S3\webapps\WEB-INF\classes"
-set "lib-dir=D:\Documents\S5\Mme Baovola\Projet S5-S3\webapps\WEB-INF\lib"
+set "bin-dir=D:\Documents\S5\Mme Baovola\Projet S5-S3\Gestion_Boulangerie\webapps\WEB-INF\classes"
+set "lib-dir=D:\Documents\S5\Mme Baovola\Projet S5-S3\Gestion_Boulangerie\webapps\WEB-INF\lib"
 
 REM Définir le dossier source et le dossier de destination
-set "source=D:\Documents\S5\Mme Baovola\Projet S5-S3\webapps"
-set "destination=C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\Boulangerie"
+set "source=D:\Documents\S5\Mme Baovola\Projet S5-S3\Gestion_Boulangerie\webapps"
+set "destination=C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\gestion_boulangerie"
 
 REM Vérifier si le dossier source existe
 if not exist "%source%" (

@@ -1,0 +1,22 @@
+body {
+    background-color: #fdf5e6; /* Beige clair */
+    color: #6c757d; /* Gris doux */
+}
+
+.stat-card {
+    background-color: #fff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d35400; /* Orange chaud */
+}
+
+footer {
+    background-color: #6e2c00;
+    color: #fff;
+}
